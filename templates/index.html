@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Spam Email Classifier</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+  <div class="max-w-xl mx-auto bg-white p-6 rounded shadow">
+    <h1 class="text-2xl font-bold mb-4 text-center">Spam Email Classifier</h1>
+    <textarea id="emailText" rows="6" class="w-full p-2 border rounded" placeholder="Enter email text here..."></textarea>
+    <button id="submitBtn" class="mt-4 w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Check Spam</button>
+    <p id="result" class="mt-4 text-center text-lg font-semibold"></p>
+  </div>
+
+  <script>
+    document.getElementById("submitBtn").onclick = async () => {
+      const email = document.getElementById("emailText").value.trim();
+      if (!email) {
+        alert("Please enter some email text!");
+        return;
+      }
+
+      const response = await fetch("/api/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        document.getElementById("result").textContent = "Prediction: " + data.prediction;
+      } else {
+        document.getElementById("result").textContent = "Error predicting spam.";
+      }
+    };
+  </script>
+</body>
+</html>
